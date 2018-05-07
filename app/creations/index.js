@@ -139,9 +139,7 @@ export default class List extends Component<Props> {
         return (
             <Item
                 key={row._id}
-                onSelect={() => {
-                    this._loadPage(row)
-                }}
+                onSelect={() => this._loadPage(row)}
                 row={row}/>
         )
     };
@@ -252,6 +250,7 @@ export default class List extends Component<Props> {
     };
     //跳转详情页
     _loadPage = (row) => {
+        console.log(row);
         console.log(this.props, 'dsadsadasdsadsadasdasdas');
         this.props.navigator.push({
             title: '详情页',

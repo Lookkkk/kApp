@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    function sum(...a) {
+        console.log(arguments);
+        console.log(a);
+        console.log(this);
+    }
+
+    var k = sum.bind(1, 'a', 'b');
+    k('c');
+    //sum()
+    Function.prototype.bind = function (context) {
+        var self = this,
+            arg = [].slice.call(arguments,1);
+        if (typeof context == 'number') {
+            context = new Number(context);
+        }
+        if (typeof context == 'string') {
+            context = new String(context);
+        }
+        context.__proto__.self = self;
+        return function () {
+            var argOut = [].slice.call(arguments);
+            context.self(...arg.concat(argOut));
+        }
+    };
+    var k = sum.bind(1, 'a', 'b');
+    k('c');
+</script>
+</body>
+</html>
