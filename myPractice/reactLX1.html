@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<div id="container"></div>
+<script>
+    //component类，用来表示文本在渲染，更新，删除时应该做些什么事情
+    function ReactDOMTextComponent(text) {
+        //存下当前的字符串
+        this._currentElement = '' + text;
+        //用来标识当前component
+        this._rootNodeID = null;
+    }
+
+    //component渲染时生成的dom结构
+    ReactDOMTextComponent.prototype.mountComponent = function (rootID) {
+        this._rootNodeID = rootID;
+        console.log('xxxxxxxxxxxxxxxxxx');
+        return '<span data-reactid="' + rootID + '">' + this._currentElement + '</span>';
+    };
+
+
+    function ReactDOMComponent(element) {
+        this._currentElement = element;
+        this._rootNodeID = null;
+    }
+
+    ReactDOMComponent.prototype.mountComponent = function (rootID) {
+        this._rootNodeID = rootID;
+        var props = this._currentElement.props;
+        var tagOpen = '<' + this._currentElement.type;
+        var tagClose = '</' + this._currentElement.type + '>';
+
+        //加上reactid标识
+        tagOpen += ' data-reactid=' + this._rootNodeID;
+
+        //拼凑出属性
+        for (var propKey in props) {
+            if (/^on[A-Za-z]/.test(propKey)) {
+                var eventType = propKey.replace('on', '');
+                $(document).delegate('[data-reactid="' + this._rootNodeID + '"]', eventType + '.' + this._rootNodeID, props[propKey]);
+            }
+            if (props[propKey] && propKey != 'children' && !/^on[A-Za-z]/.test(propKey)) {
+                tagOpen += ' ' + propKey + '=' + props[propKey];
+            }
+        }
+        var content = '';
+        var children = props.children || [];
+        var childrenInstances = [];
+        var that = this;
+        $.each(children, function (key, child) {
+            var childComponentInstance = instantiateReactComponent(child);
+            childComponentInstance._mountIndex = key;
+            childrenInstances.push(childrenInstances);
+            var curRootId = that._rootNodeID + '.' + key;
+            var childMarkup = childComponentInstance.mountComponent(curRootId);
+            content += ' ' + childMarkup;
+        });
+        this._renderedChildren = childrenInstances;
+        return tagOpen + '>' + content + tagClose;
+    };
+
+    //component工厂  用来返回一个component实例
+    /*function instantiateReactComponent(node) {
+        if (typeof node === 'string' || typeof node === 'number') {
+            return new ReactDOMTextComponent(node)
+        }
+        if (typeof node === 'object' && typeof node.type === 'string') {
+            return new ReactDOMComponent(node);
+        }
+    }
+*/
+    function instantiateReactComponent(node) {
+        //文本节点的情况
+        if (typeof node === 'string' || typeof node === 'number') {
+            return new ReactDOMTextComponent(node);
+        }
+        //浏览器默认节点的情况
+        if (typeof node === 'object' && typeof node.type === 'string') {
+            //注意这里，使用了一种新的component
+            return new ReactDOMComponent(node);
+
+        }
+        //自定义的元素节点
+        if (typeof node === 'object' && typeof node.type === 'function') {
+            //注意这里，使用新的component,专门针对自定义元素
+            return new ReactCompositeComponent(node);
+        }
+    }
+
+    function ReactElement(type, key, props) {
+        this.type = type;
+        this.key = key;
+        this.props = props;
+    }
+
+    React = {
+        nextReactRootIndex: 0,
+        createElement: function (type, config, children) {
+            var props = {}, propName;
+            config = config || {};
+            var key = config.key || null;
+            for (propName in config) {
+                if (config.hasOwnProperty(propName) && propName !== 'key') {
+                    props[propName] = config[propName];
+                }
+            }
+            var childrenLength = arguments.length - 2;
+            if (childrenLength === 1) {
+                props.children = $.isArray(children) ? children : [children];
+            } else if (childrenLength > 1) {
+                /*var childArray = Array(childrenLength);
+                for (var i = 0; i < childrenLength; i++) {
+                    childArray[i] = arguments[i + 2];
+                }*/
+                props.children = [].slice.call(arguments, 2);
+            }
+            return new ReactElement(type, key, props);
+        },
+        render: function (element, container) {
+            let componentInstance = instantiateReactComponent(element);
+            console.log(componentInstance);
+            let markup = componentInstance.mountComponent(React.nextReactRootIndex++);
+            console.log(markup);
+            $(container).html(markup);
+            $(document).trigger('mountReady');
+        }
+    };
+
+    function hello() {
+        alert('hello')
+    }
+
+    var element = React.createElement('div', {id: 'test', onmousemove: hello}, 'click me');
+    console.log(element);
+    React.render(element, document.getElementById("container"));
+    //React.render('hello world',document.getElementById("container"))
+    /*var obj = {a: 'a', b: 'b', c: 'c'}, p;
+    var obj = Array(4);
+    console.log(obj);
+    for (p in obj) {
+        console.log(p);
+    }*/
+
+    //=========================================================================================================
+
+
+</script>
+</body>
+</html>

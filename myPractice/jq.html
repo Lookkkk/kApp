@@ -1,0 +1,21 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("div").delegate("p,[data-reactid=0]","click.0",function(){
+                $("p").slideToggle();
+            });
+        });
+        console.log($("button"));
+    </script>
+</head>
+<body>
+<div style="background-color:red">
+    <p>这是一个段落。</p>
+    <button data-reactid=0>请点击这里</button>
+</div>
+
+</body>
+</html>

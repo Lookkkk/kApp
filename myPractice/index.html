@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="main" style="width: 600px;height:400px;"></div>
+<script>
+    /*var p = new Promise(function (resolve, reject) {
+        resolve('k');
+    });
+    p.then(data => {
+        console.log(data);
+    }).catch(err => {
+        console.log(err);
+    }).finally(data => {
+        console.log('data');
+    });*/
+
+    function P(f) {
+        setTimeout(() => {
+            f(this.f1, this.f2);
+        })
+    }
+
+    P.prototype.then = function (f1, f2) {
+        this.f1 = (...data) => {
+            setTimeout(()=>{
+                this.d1 = f1 ? f1(...data) : undefined;
+                //console.log(this.f_1);
+                setTimeout(() => {
+                    this.f_1 ? this.f_1(this.d1) : undefined;
+                })
+            })
+        };
+        this.f2 = (...data) => {
+            setTimeout(()=>{
+                this.d2 = f2 ? f2(...data) : '';
+                setTimeout(() => {
+                    this.f_2 ? this.f_2(this.d2) : '';
+                })
+            })
+        };
+
+        return new P((f_1, f_2) => {
+            this.f_1 = f_1;
+            this.f_2 = f_2;
+        });
+    };
+    P.prototype.all = function () {
+
+    };
+
+    var p = new P(function (resolve, reject) {
+        //resolve('k');
+        setTimeout(function () {
+            resolve('k')
+        }, 2000)
+        /*if(Math.random()>0.5){
+            resolve('k');
+        }else {
+            reject('f')
+        }*/
+
+    });
+    p.then(
+        data => {
+            console.log(data);
+            return data
+        },
+        err => err
+    ).then(
+        data => {
+            console.log(data);
+            return data
+        },
+        err => {
+            console.log(err)
+        }).then(
+        data => {
+            console.log(data);
+            return data
+        },
+        err => {
+            console.log(err);
+        }
+    );
+    /*setTimeout(function () {
+        console.log('y');
+    })
+    console.log('1');
+    var p=new Promise(function (resolve, reject) {
+        console.log('s');
+        resolve('k');
+    });
+    console.log('2');
+    //var i=p.then(data=>console.log(data));
+    console.log(i == p);
+    console.log('3');*/
+    /*setTimeout(function () {
+        console.log('k');
+    });
+    for (var i = 0; i < 100000000; i++) {
+        var obj = 100000000[i];
+    }
+    var p = new Promise(function (resolve,reject) {
+        console.log('j');
+        resolve('f')
+    });
+    p.then(data=>console.log(data));*/
+</script>
+</body>
+</html>
