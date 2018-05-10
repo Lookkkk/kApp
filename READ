@@ -1,0 +1,27 @@
+#git
+git clone只能clone远程库的master分支，无法clone所有分支，解决办法如下：
+1. 找一个干净目录，假设是git_work
+2. cd git_work
+3. git clone http://myrepo.xxx.com/project/.git ,这样在git_work目录下得到一个project子目录
+4. cd project
+5. git branch -a，列出所有分支名称如下：
+remotes/origin/dev
+remotes/origin/release
+6. git checkout -b dev origin/dev，作用是checkout远程的dev分支，在本地起名为dev分支，并切换到本地的dev分支
+7. git checkout -b release origin/release，作用参见上一步解释
+8. git checkout dev，切换回dev分支，并开始开发。
+
+Mac快捷键：
+Control+Tab：谷歌浏览器切换下一个标签
+Control+Shift+Tab：谷歌浏览器切换上一个标签
+Control+Command+/：快速打开终端
+Option+Command+空格：快速打开访达
+Command+空格：快速打开搜索=>ter：快速打开终端
+Command+F3：快速切换到桌面
+焦点访达=>Option+Command+H：隐藏所有应用，显示访达，即桌面
+Command+W：隐藏标签
+Command+H：隐藏整个应用
+Command+Q：关闭整个应用
+Command+Option+ESC：调出系统控制台，强行结束程序
+Command＋shift＋3：全屏截图
+Command＋shift＋4：鼠标选定区域截图，保存截图到桌面
