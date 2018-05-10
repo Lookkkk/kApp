@@ -7,7 +7,7 @@
 <body>
 <script src="Promise.js"></script>
 <script>
-    let p = new Promise(function (resolve, reject) {
+    /*let p = new Promise(function (resolve, reject) {
         resolve('dsadsadsa')
     });
     let p2=p.then(function (data) {
@@ -28,7 +28,7 @@
             resolve('p')
         })
     }, function (err) {
-    });
+    });*/
     function Promise(executor) {
         let self = this;
         self.status = 'pending';
@@ -108,6 +108,9 @@
         self.onResolvedCallBacks.push(onFulfilled);
         self.onRejectedCallBacks.push(onRejected);
     };
+    var p=new Promise(function () {
+
+    })
 
 </script>
 </body>
